@@ -2,21 +2,18 @@
 
 #include <algorithm>
 #include <array>
-#include <limits>
 #include <vector>
-#include <thread>
 #include <omp.h>
-#include <future>
-#include <execution>
+#include <iostream>
 
-void bubble_sort_omp(std::vector<int>& vec)
+void oddeven_sort_omp(std::vector<int>& vec)
 {
     const std::int64_t n = vec.size();
     for (std::int64_t i = 0; i < n; i++)
     {
         const int start = i % 2;
 
-    #pragma omp parallel for
+    #pragma omp parallel for schedule(guided)
         for (std::int64_t j = start; j < n - 1; j += 2)
         {
             if (vec[j] > vec[j + 1])
@@ -26,6 +23,7 @@ void bubble_sort_omp(std::vector<int>& vec)
         }
     }
 }
+
 
 void bucket_sort_omp(std::vector<int>& vec)
 {
@@ -42,10 +40,14 @@ void bucket_sort_omp(std::vector<int>& vec)
         buckets[index].push_back(i);
     }
 
-//#pragma omp parallel for
-    for (std::int64_t i = 0; i < buckets.size(); ++i)
+
+    const auto size = static_cast<std::int64_t>(buckets.size());
+
+    omp_set_nested(1);
+#pragma omp parallel for schedule(guided)
+    for (std::int64_t i = 0; i < size; ++i)
     {
-        bubble_sort_omp(buckets[i]);
+        oddeven_sort_omp(buckets[i]);
     }
 
     std::size_t count = 0;

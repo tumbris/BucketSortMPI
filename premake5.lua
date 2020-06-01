@@ -1,4 +1,4 @@
-workspace "BucketSortMPI"
+workspace "BucketSortOMP"
     configurations { "Debug", "Release" }
     architecture "x64"
     platforms { "Win64" }
@@ -13,22 +13,27 @@ workspace "BucketSortMPI"
         buildoptions 
         {
             "/Zc:__cplusplus",
-            "/openmp"
         }
 
     filter "system:windows"
         systemversion "latest"
 
-    project "BucketSortMPI"
+    project "BucketSortOpenMP"
         kind "ConsoleApp"
         language "C++"
         cppdialect (CPPDIALECT)
         targetdir (TARGET_DIR)
         objdir (OUTPUT_DIR .. "/%{prj.name}")
 
-        files { "**.hpp", "**.cpp" }
+        files { "%{prj.location}/**.hpp", "%{prj.location}/**.cpp" }
 
-        links { "msmpi" }
+        filter "action:vs*"
+            buildoptions 
+            {
+                "/openmp"
+            }
+
+        includedirs {"%{prj.location}"}
 
         filter "configurations:Debug"
             defines { "DEBUG" }
@@ -39,16 +44,3 @@ workspace "BucketSortMPI"
             defines { "NDEBUG", "RELEASE"}
             optimize "On"
             runtime "Release"
-
-            
-        filter "system:windows"
-            includedirs
-            {
-                "\"" .. os.getenv("MSMPI_INC") .. "\""
-            }
-            
-            libdirs
-            {
-                "\"" .. os.getenv("MSMPI_LIB64") .. "\""
-            }
-

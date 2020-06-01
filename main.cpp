@@ -7,24 +7,6 @@
 #include <cassert>
 #include <iostream>
 
-void nbubble_sort(std::vector<int>& vec)
-{
-    const std::int64_t n = vec.size();
-    for (std::int64_t i = 0; i < n; i++)
-    {
-        const int start = i % 2;
-
-    #pragma omp parallel for
-        for (std::int64_t j = start; j < n - 1; j += 2)
-        {
-            if (vec[j] > vec[j + 1])
-            {
-                std::swap(vec[j], vec[j + 1]);
-            }
-        }
-    }
-}
-
 int main([[maybe_unused]] int argc, char** argv)
 {
 
@@ -33,7 +15,8 @@ int main([[maybe_unused]] int argc, char** argv)
     std::default_random_engine e(r());
     std::uniform_int_distribution<int> uniform_dist(INT_MIN, INT_MAX);
 
-    std::vector<int> vec(100000);
+
+    std::vector<int> vec(10000);
 
     std::chrono::duration<double> sort_duration;
 

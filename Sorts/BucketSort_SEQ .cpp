@@ -2,16 +2,15 @@
 
 #include <algorithm>
 #include <array>
-#include <limits>
 #include <vector>
-#include <execution>
 
-void bubble_sort_seq(std::vector<int>& vec)
+void oddeven_sort_seq(std::vector<int>& vec)
 {
     const std::int64_t n = vec.size();
-    for (std::int64_t i = 0; i < n; ++i)
+    for (std::int64_t i = 0; i < n; i++)
     {
-        for (std::int64_t j = i; j < n - 1; ++j)
+        const auto start = i % 2;
+        for (std::int64_t j = start; j < n - 1; j += 2)
         {
             if (vec[j] > vec[j + 1])
             {
@@ -38,7 +37,7 @@ void bucket_sort_seq(std::vector<int>& vec)
 
     for (auto& bucket : buckets)
     {
-        bubble_sort_seq(bucket);
+        oddeven_sort_seq(bucket);
     }
 
     std::size_t count = 0;
